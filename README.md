@@ -1,1 +1,3 @@
-# troco-certo
+# Troco-Certo
+
+Site pra controle de finanças
