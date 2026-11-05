@@ -27,3 +27,9 @@ CREATE TABLE IF NOT EXISTS lancamentos (
 -- Índice: deixa rápida a busca de lançamentos por data,
 -- que é o que mais fazemos (tudo é filtrado por mês)
 CREATE INDEX IF NOT EXISTS idx_lancamentos_data ON lancamentos (data);
+
+-- Configurações do usuário, no formato chave = valor
+CREATE TABLE IF NOT EXISTS configuracoes (
+  chave TEXT PRIMARY KEY,
+  valor TEXT NOT NULL
+);
