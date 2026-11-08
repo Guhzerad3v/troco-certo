@@ -69,9 +69,19 @@ async function criarLancamento(req, res) {
   responder(res, 201, { ok: true });
 }
 
+// DELETE /api/lancamentos/5
+function excluirLancamento(res, id) {
+  banco.prepare('DELETE FROM lancamentos WHERE id = ?').run(id);
+  responder(res, 200, { ok: true });
+}
+
 // escolhe a função certa olhando o método (GET, POST...) e o endereço
 async function tratar(req, res, url) {
   const caminho = url.pathname;
+
+  // ex.: "/api/lancamentos/5" vira ['', 'api', 'lancamentos', '5']
+  const partes = caminho.split('/');
+  const id = Number(partes[3]);
 
   try {
     if (req.method === 'GET' && caminho === '/api/saude') {
@@ -85,6 +95,9 @@ async function tratar(req, res, url) {
     }
     if (req.method === 'POST' && caminho === '/api/lancamentos') {
       return await criarLancamento(req, res);
+    }
+    if (req.method === 'DELETE' && partes[2] === 'lancamentos' && id) {
+      return excluirLancamento(res, id);
     }
 
     responder(res, 404, { erro: 'Rota não encontrada' });
