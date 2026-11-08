@@ -75,6 +75,52 @@ function excluirLancamento(res, id) {
   responder(res, 200, { ok: true });
 }
 
+function lerConfiguracao(chave) {
+  return banco.prepare('SELECT valor FROM configuracoes WHERE chave = ?').get(chave).valor;
+}
+
+function salvarConfiguracao(chave, valor) {
+  banco.prepare('UPDATE configuracoes SET valor = ? WHERE chave = ?').run(valor, chave);
+}
+
+// GET /api/resumo?mes=2026-11
+function resumoDoMes(res, url) {
+  const mes = url.searchParams.get('mes');
+
+  // a view do banco já faz as somas do mês
+  let totais = banco.prepare('SELECT * FROM vw_resumo_mensal WHERE mes = ?').get(mes);
+  if (!totais) {
+    totais = { entradas: 0, saidas: 0, imprevistos: 0 };
+  }
+
+  const incluirImprevistos = lerConfiguracao('incluir_imprevistos') === '1';
+
+  // se a opção estiver marcada, os imprevistos também descontam do saldo
+  let saldo = totais.entradas - totais.saidas;
+  if (incluirImprevistos) {
+    saldo = saldo - totais.imprevistos;
+  }
+
+  responder(res, 200, {
+    entradas: totais.entradas,
+    saidas: totais.saidas,
+    imprevistos: totais.imprevistos,
+    saldo: saldo,
+    incluir_imprevistos: incluirImprevistos,
+  });
+}
+
+// PUT /api/configuracoes   ex.: { "incluir_imprevistos": false }
+async function salvarConfiguracoes(req, res) {
+  const dados = await lerCorpo(req);
+  if (!dados || dados.incluir_imprevistos === undefined) {
+    return responder(res, 400, { erro: 'Dados inválidos' });
+  }
+
+  salvarConfiguracao('incluir_imprevistos', dados.incluir_imprevistos ? '1' : '0');
+  responder(res, 200, { ok: true });
+}
+
 // escolhe a função certa olhando o método (GET, POST...) e o endereço
 async function tratar(req, res, url) {
   const caminho = url.pathname;
@@ -98,6 +144,12 @@ async function tratar(req, res, url) {
     }
     if (req.method === 'DELETE' && partes[2] === 'lancamentos' && id) {
       return excluirLancamento(res, id);
+    }
+    if (req.method === 'GET' && caminho === '/api/resumo') {
+      return resumoDoMes(res, url);
+    }
+    if (req.method === 'PUT' && caminho === '/api/configuracoes') {
+      return await salvarConfiguracoes(req, res);
     }
 
     responder(res, 404, { erro: 'Rota não encontrada' });
