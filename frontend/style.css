@@ -1,0 +1,191 @@
+/* Troco Certo - tema azul
+   verde: dinheiro que entra | vermelho: que sai | laranja: imprevisto */
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #eef4fb;
+  color: #1f2d3d;
+}
+
+/* topo */
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background-color: #1e5aa8;
+  color: white;
+}
+
+header h1 {
+  margin: 0;
+}
+
+/* moeda do logo: um quadrado com borda redonda vira círculo */
+.moeda {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #ffd54f;
+  color: #7a5c00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+section {
+  background-color: white;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #1e5aa8;
+}
+
+/* meses */
+.meses {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+  font-size: 18px;
+}
+
+/* cartões do resumo */
+.cartoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cartao {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.cartao span {
+  display: block;
+  font-size: 13px;
+}
+
+.cartao strong {
+  display: block;
+  font-size: 22px;
+  margin-top: 4px;
+}
+
+.cartao.entrada {
+  background-color: #e3f1e6;
+  color: #1b5e20;
+}
+
+.cartao.saida {
+  background-color: #fbe7e7;
+  color: #b71c1c;
+}
+
+.cartao.imprevisto {
+  background-color: #fdf0dc;
+  color: #e65100;
+}
+
+.cartao.saldo {
+  background-color: #16325c;
+  color: white;
+}
+
+/* formulário: tudo numa linha (desce de linha se a tela for pequena) */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#campo-descricao {
+  flex: 1;
+  min-width: 140px;
+}
+
+input,
+select,
+button {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid #c9d8ea;
+  border-radius: 8px;
+}
+
+input[type="checkbox"] {
+  accent-color: #1e5aa8;
+}
+
+button {
+  background-color: #1e5aa8;
+  border-color: #1e5aa8;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #154785;
+}
+
+/* lista de lançamentos */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 8px 4px;
+  border-bottom: 1px solid #e3eaf3;
+}
+
+small {
+  color: #7a8ca3;
+}
+
+.valor {
+  text-align: right;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.valor.entrada {
+  color: #2e7d32;
+}
+
+.valor.saida {
+  color: #c62828;
+}
+
+.valor.imprevisto {
+  color: #ef6c00;
+}
+
+/* botão de excluir: só um X discreto */
+button.excluir {
+  background-color: transparent;
+  border-color: transparent;
+  color: #c62828;
+  padding: 2px 8px;
+}
+
+button.excluir:hover {
+  background-color: #fbe7e7;
+}
