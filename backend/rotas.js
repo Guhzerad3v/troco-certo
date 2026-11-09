@@ -24,10 +24,9 @@ function lerCorpo(req) {
   });
 }
 
-// GET /api/categorias?tipo=saida
-function listarCategorias(res, url) {
-  const tipo = url.searchParams.get('tipo');
-  const categorias = banco.prepare('SELECT id, nome FROM categorias WHERE tipo = ? ORDER BY id').all(tipo);
+// GET /api/categorias  (todas, cada uma com o seu tipo)
+function listarCategorias(res) {
+  const categorias = banco.prepare('SELECT id, nome, tipo FROM categorias ORDER BY id').all();
   responder(res, 200, categorias);
 }
 
@@ -57,12 +56,15 @@ async function criarLancamento(req, res) {
 
   // os ? são trocados pelos valores com segurança (evita SQL Injection)
   try {
+    // o tipo (entrada, saída ou imprevisto) vem da categoria escolhida
+    const categoria = banco.prepare('SELECT tipo FROM categorias WHERE id = ?').get(dados.categoria_id);
+
     banco.prepare(`
       INSERT INTO lancamentos (tipo, descricao, valor_centavos, categoria_id, data)
       VALUES (?, ?, ?, ?, ?)
-    `).run(dados.tipo, dados.descricao, dados.valor_centavos, dados.categoria_id, dados.data);
+    `).run(categoria.tipo, dados.descricao, dados.valor_centavos, dados.categoria_id, dados.data);
   } catch (erro) {
-    // o banco recusou: tipo errado, categoria que não existe, data inválida...
+    // categoria que não existe, data inválida... o banco ou o código recusou
     return responder(res, 400, { erro: 'Dados inválidos' });
   }
 
@@ -134,7 +136,7 @@ async function tratar(req, res, url) {
       return responder(res, 200, { mensagem: 'Servidor funcionando' });
     }
     if (req.method === 'GET' && caminho === '/api/categorias') {
-      return listarCategorias(res, url);
+      return listarCategorias(res);
     }
     if (req.method === 'GET' && caminho === '/api/lancamentos') {
       return listarLancamentos(res, url);
