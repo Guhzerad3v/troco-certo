@@ -50,15 +50,9 @@
     <section>
       <h2>Novo lançamento</h2>
       <form id="formulario">
-        <select id="campo-tipo">
-          <option value="entrada">Entrada</option>
-          <option value="saida" selected>Saída</option>
-          <option value="imprevisto">Imprevisto</option>
-        </select>
+        <select id="campo-categoria"></select>
         <input id="campo-descricao" type="text" maxlength="80" placeholder="Descrição" required>
         <input id="campo-valor" type="text" inputmode="decimal" placeholder="Valor (R$)" required>
-        <select id="campo-categoria"></select>
-        <input id="campo-data" type="date" required>
         <button type="submit">Adicionar</button>
       </form>
       <p id="mensagem" role="status"></p>

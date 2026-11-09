@@ -1,27 +1,32 @@
 // Formulário de novo lançamento
 
-const campoTipo = document.getElementById('campo-tipo');
 const campoCategoria = document.getElementById('campo-categoria');
-const campoData = document.getElementById('campo-data');
 
-// coloca no select as categorias do tipo escolhido
+// coloca as categorias no select, separadas por tipo (cada tipo vira um optgroup)
 async function carregarCategorias() {
-  const categorias = await buscarCategorias(campoTipo.value);
+  const categorias = await buscarCategorias();
+  const grupos = { entrada: 'Entradas', saida: 'Saídas', imprevisto: 'Imprevistos' };
+
   let opcoes = '';
-  for (const categoria of categorias) {
-    opcoes += `<option value="${categoria.id}">${categoria.nome}</option>`;
+  for (const tipo in grupos) {
+    opcoes += `<optgroup label="${grupos[tipo]}">`;
+    for (const categoria of categorias) {
+      if (categoria.tipo === tipo) {
+        opcoes += `<option value="${categoria.id}">${categoria.nome}</option>`;
+      }
+    }
+    opcoes += '</optgroup>';
   }
   campoCategoria.innerHTML = opcoes;
 }
 
-// sugere uma data dentro do mês que está aberto
-function preencherData() {
+// o lançamento entra no mês que está na tela: com o dia de hoje, se for o mês atual
+function dataDoLancamento() {
   if (mesSelecionado === mesDeHoje()) {
     const dia = String(new Date().getDate()).padStart(2, '0');
-    campoData.value = mesSelecionado + '-' + dia;
-  } else {
-    campoData.value = mesSelecionado + '-01';
+    return mesSelecionado + '-' + dia;
   }
+  return mesSelecionado + '-01';
 }
 
 document.getElementById('formulario').addEventListener('submit', async function (evento) {
@@ -35,11 +40,10 @@ document.getElementById('formulario').addEventListener('submit', async function 
 
   try {
     await criarLancamento({
-      tipo: campoTipo.value,
+      categoria_id: Number(campoCategoria.value),
       descricao: document.getElementById('campo-descricao').value,
       valor_centavos: valor,
-      categoria_id: Number(campoCategoria.value),
-      data: campoData.value,
+      data: dataDoLancamento(),
     });
   } catch (erro) {
     mostrarMensagem('Erro: ' + erro.message);
@@ -48,10 +52,8 @@ document.getElementById('formulario').addEventListener('submit', async function 
 
   document.getElementById('campo-descricao').value = '';
   document.getElementById('campo-valor').value = '';
-  mesSelecionado = campoData.value.slice(0, 7); // vai para o mês do lançamento
   mostrarMensagem('Pronto, lançamento salvo!');
   atualizarTela();
 });
 
-campoTipo.addEventListener('change', carregarCategorias);
 carregarCategorias();

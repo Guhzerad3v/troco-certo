@@ -19,8 +19,8 @@ async function requisitar(metodo, endereco, dados) {
   return json;
 }
 
-function buscarCategorias(tipo) {
-  return requisitar('GET', '/api/categorias?tipo=' + tipo);
+function buscarCategorias() {
+  return requisitar('GET', '/api/categorias');
 }
 
 function buscarLancamentos(mes) {

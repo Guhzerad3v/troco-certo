@@ -52,7 +52,6 @@ async function atualizarTela() {
   document.getElementById('mes-atual').textContent = nomeDoMes(mesSelecionado);
   try {
     await carregarLancamentos();
-    preencherData();
     await carregarResumo();
   } catch (erro) {
     mostrarMensagem('Erro: ' + erro.message);
