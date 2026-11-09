@@ -3,52 +3,37 @@
 
 body {
   font-family: "Segoe UI", Arial, sans-serif;
-  max-width: 800px;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 16px;
-  background-color: #eef4fb;
+  padding: 24px 16px;
   color: #1f2d3d;
 }
 
-/* topo */
+/* topo: moeda e nome no centro */
 header {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 14px;
-  padding: 16px 20px;
-  border-radius: 14px;
-  background-color: #1e5aa8;
-  color: white;
+  gap: 10px;
 }
 
 header h1 {
   margin: 0;
+  color: #1e5aa8;
 }
 
 /* moeda do logo: um quadrado com borda redonda vira círculo */
 .moeda {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: #ffd54f;
   color: #7a5c00;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
   font-weight: bold;
-}
-
-section {
-  background-color: white;
-  border-radius: 14px;
-  padding: 16px 20px;
-  margin-bottom: 16px;
-}
-
-h2 {
-  margin-top: 0;
-  font-size: 18px;
-  color: #1e5aa8;
 }
 
 /* meses */
@@ -56,62 +41,61 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 16px;
-  margin: 16px 0;
-  font-size: 18px;
+  gap: 12px;
+  margin: 12px 0;
 }
 
-/* cartões do resumo */
-.cartoes {
+/* resumo: tudo centralizado, separado só por duas linhas finas */
+.resumo {
+  text-align: center;
+  padding: 16px 0;
+  border-top: 1px solid #e3eaf3;
+  border-bottom: 1px solid #e3eaf3;
+}
+
+.rotulo {
+  margin: 0;
+  font-size: 14px;
+  color: #7a8ca3;
+}
+
+.saldo {
+  margin: 4px 0 12px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #16325c;
+}
+
+.totais {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 12px;
+  justify-content: center;
+  gap: 24px;
+  font-size: 14px;
 }
 
-.cartao {
-  flex: 1;
-  min-width: 140px;
-  padding: 12px;
-  border-radius: 10px;
+.totais p {
+  margin: 0 0 12px;
 }
 
-.cartao span {
-  display: block;
-  font-size: 13px;
+/* cores com sentido (usadas no resumo e na lista) */
+.entrada {
+  color: #2e7d32;
 }
 
-.cartao strong {
-  display: block;
-  font-size: 22px;
-  margin-top: 4px;
+.saida {
+  color: #c62828;
 }
 
-.cartao.entrada {
-  background-color: #e3f1e6;
-  color: #1b5e20;
+.imprevisto {
+  color: #ef6c00;
 }
 
-.cartao.saida {
-  background-color: #fbe7e7;
-  color: #b71c1c;
-}
-
-.cartao.imprevisto {
-  background-color: #fdf0dc;
-  color: #e65100;
-}
-
-.cartao.saldo {
-  background-color: #16325c;
-  color: white;
-}
-
-/* formulário: tudo numa linha (desce de linha se a tela for pequena) */
+/* formulário numa linha só */
 form {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: 20px;
 }
 
 #campo-descricao {
@@ -145,6 +129,11 @@ button:hover {
   background-color: #154785;
 }
 
+#mensagem {
+  font-size: 14px;
+  color: #7a8ca3;
+}
+
 /* lista de lançamentos */
 table {
   width: 100%;
@@ -153,7 +142,7 @@ table {
 
 td {
   padding: 8px 4px;
-  border-bottom: 1px solid #e3eaf3;
+  border-bottom: 1px solid #eef2f7;
 }
 
 small {
@@ -164,18 +153,6 @@ small {
   text-align: right;
   white-space: nowrap;
   font-weight: bold;
-}
-
-.valor.entrada {
-  color: #2e7d32;
-}
-
-.valor.saida {
-  color: #c62828;
-}
-
-.valor.imprevisto {
-  color: #ef6c00;
 }
 
 /* botão de excluir: só um X discreto */

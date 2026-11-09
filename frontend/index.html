@@ -20,25 +20,14 @@
       <button id="mes-seguinte" type="button">&rarr;</button>
     </nav>
 
-    <!-- resumo do mês -->
-    <section>
-      <div class="cartoes">
-        <div class="cartao entrada">
-          <span>Entradas</span>
-          <strong id="total-entradas">R$ 0,00</strong>
-        </div>
-        <div class="cartao saida">
-          <span>Saídas</span>
-          <strong id="total-saidas">R$ 0,00</strong>
-        </div>
-        <div class="cartao imprevisto">
-          <span>Imprevistos</span>
-          <strong id="total-imprevistos">R$ 0,00</strong>
-        </div>
-        <div class="cartao saldo">
-          <span>Saldo</span>
-          <strong id="saldo">R$ 0,00</strong>
-        </div>
+    <!-- resumo do mês: o saldo em destaque e os totais embaixo -->
+    <section class="resumo">
+      <p class="rotulo">Saldo do mês</p>
+      <p id="saldo" class="saldo">R$ 0,00</p>
+      <div class="totais">
+        <p class="entrada">Entradas<br><strong id="total-entradas">R$ 0,00</strong></p>
+        <p class="saida">Saídas<br><strong id="total-saidas">R$ 0,00</strong></p>
+        <p class="imprevisto">Imprevistos<br><strong id="total-imprevistos">R$ 0,00</strong></p>
       </div>
       <label>
         <input id="incluir-imprevistos" type="checkbox">
@@ -47,24 +36,18 @@
     </section>
 
     <!-- novo lançamento -->
-    <section>
-      <h2>Novo lançamento</h2>
-      <form id="formulario">
-        <select id="campo-categoria"></select>
-        <input id="campo-descricao" type="text" maxlength="80" placeholder="Descrição" required>
-        <input id="campo-valor" type="text" inputmode="decimal" placeholder="Valor (R$)" required>
-        <button type="submit">Adicionar</button>
-      </form>
-      <p id="mensagem" role="status"></p>
-    </section>
+    <form id="formulario">
+      <select id="campo-categoria"></select>
+      <input id="campo-descricao" type="text" maxlength="80" placeholder="Descrição" required>
+      <input id="campo-valor" type="text" inputmode="decimal" placeholder="Valor (R$)" required>
+      <button type="submit">Adicionar</button>
+    </form>
+    <p id="mensagem" role="status"></p>
 
     <!-- lançamentos do mês -->
-    <section>
-      <h2>Lançamentos do mês</h2>
-      <table>
-        <tbody id="lista-lancamentos"></tbody>
-      </table>
-    </section>
+    <table>
+      <tbody id="lista-lancamentos"></tbody>
+    </table>
   </main>
 
   <script src="js/util.js"></script>
