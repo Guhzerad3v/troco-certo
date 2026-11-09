@@ -53,6 +53,7 @@ async function atualizarTela() {
   try {
     await carregarLancamentos();
     preencherData();
+    await carregarResumo();
   } catch (erro) {
     mostrarMensagem('Erro: ' + erro.message);
   }
