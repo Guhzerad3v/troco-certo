@@ -33,3 +33,14 @@ CREATE TABLE IF NOT EXISTS configuracoes (
   chave TEXT PRIMARY KEY,
   valor TEXT NOT NULL
 );
+
+-- View (consulta salva): totais de cada mês.
+-- O back-end só precisa fazer: SELECT * FROM vw_resumo_mensal WHERE mes = '2026-11'
+CREATE VIEW IF NOT EXISTS vw_resumo_mensal AS
+SELECT
+  substr(data, 1, 7) AS mes,
+  SUM(CASE WHEN tipo = 'entrada'    THEN valor_centavos ELSE 0 END) AS entradas,
+  SUM(CASE WHEN tipo = 'saida'      THEN valor_centavos ELSE 0 END) AS saidas,
+  SUM(CASE WHEN tipo = 'imprevisto' THEN valor_centavos ELSE 0 END) AS imprevistos
+FROM lancamentos
+GROUP BY mes;
