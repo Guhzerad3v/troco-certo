@@ -41,10 +41,6 @@ SELECT
   substr(data, 1, 7) AS mes,
   SUM(CASE WHEN tipo = 'entrada'    THEN valor_centavos ELSE 0 END) AS entradas,
   SUM(CASE WHEN tipo = 'saida'      THEN valor_centavos ELSE 0 END) AS saidas,
-  SUM(CASE WHEN tipo = 'imprevisto' THEN valor_centavos ELSE 0 END) AS imprevistos,
-  SUM(CASE WHEN tipo = 'entrada'    AND pago = 1 THEN valor_centavos ELSE 0 END) AS entradas_pagas,
-  SUM(CASE WHEN tipo = 'saida'      AND pago = 1 THEN valor_centavos ELSE 0 END) AS saidas_pagas,
-  SUM(CASE WHEN tipo = 'imprevisto' AND pago = 1 THEN valor_centavos ELSE 0 END) AS imprevistos_pagos,
-  SUM(CASE WHEN pago = 0 THEN 1 ELSE 0 END) AS pendentes
+  SUM(CASE WHEN tipo = 'imprevisto' THEN valor_centavos ELSE 0 END) AS imprevistos
 FROM lancamentos
 GROUP BY mes;

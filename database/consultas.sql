@@ -22,10 +22,10 @@ WHERE l.tipo <> 'entrada'
 GROUP BY c.id
 ORDER BY total DESC;
 
--- 4. Contas que ainda não foram pagas
+-- 4. Os imprevistos de um mês
 SELECT data, descricao, valor_centavos / 100.0 AS valor
 FROM lancamentos
-WHERE pago = 0
+WHERE tipo = 'imprevisto' AND substr(data, 1, 7) = '2026-11'
 ORDER BY data;
 
 -- 5. Os 5 maiores gastos
