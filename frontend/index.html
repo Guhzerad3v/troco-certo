@@ -4,56 +4,198 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Troco Certo</title>
+  <!-- design system "Industry" (cores, fontes e espaços) + o nosso CSS -->
+  <link rel="stylesheet" href="css/industry.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <div class="moeda">R$</div>
-    <h1>Troco Certo</h1>
-  </header>
 
-  <main>
-    <!-- trocar de mês -->
-    <nav class="meses">
-      <button id="mes-anterior" type="button">&larr;</button>
-      <strong id="mes-atual">Carregando...</strong>
-      <button id="mes-seguinte" type="button">&rarr;</button>
-    </nav>
+  <!-- Faixa do modo demonstração (só aparece no Vercel) -->
+  <div id="faixa-demo" class="faixa-demo" hidden>
+    <span>Modo demonstração — os dados ficam só neste navegador</span>
+    <button type="button" id="restaurar-demo" class="link">Restaurar dados de exemplo</button>
+  </div>
 
-    <!-- resumo do mês: o saldo em destaque e os totais embaixo -->
-    <section class="resumo">
-      <p class="rotulo">Saldo do mês</p>
-      <p id="saldo" class="saldo">R$ 0,00</p>
-      <div class="totais">
-        <p class="entrada">Entradas<br><strong id="total-entradas">R$ 0,00</strong></p>
-        <p class="saida">Saídas<br><strong id="total-saidas">R$ 0,00</strong></p>
-        <p class="imprevisto">Imprevistos<br><strong id="total-imprevistos">R$ 0,00</strong></p>
-      </div>
-      <label>
-        <input id="incluir-imprevistos" type="checkbox">
-        Descontar os imprevistos do saldo
-      </label>
-    </section>
-
-    <!-- novo lançamento -->
-    <form id="formulario">
-      <select id="campo-categoria"></select>
-      <input id="campo-descricao" type="text" maxlength="80" placeholder="Descrição" required>
-      <input id="campo-valor" type="text" inputmode="decimal" placeholder="Valor (R$)" required>
-      <button type="submit">Adicionar</button>
+  <!-- ================= LOGIN ================= -->
+  <section id="tela-login" class="tela-entrada" hidden>
+    <form id="form-login" class="cartao-entrada blueprint" novalidate>
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="logo"><span class="logo-marca">R$</span><span class="logo-nome">Troco Certo</span></div>
+      <h2>Entrar</h2>
+      <label>E-mail <input id="login-email" type="email" placeholder="voce@email.com" autocomplete="email"></label>
+      <label>Senha <input id="login-senha" type="password" autocomplete="current-password"></label>
+      <p id="login-erro" class="erro" role="alert"></p>
+      <button type="submit" class="botao-principal">Entrar</button>
+      <p class="trocar">Não tem conta? <button type="button" class="link" data-trocar-para="cadastro">Criar conta</button></p>
     </form>
-    <p id="mensagem" role="status"></p>
+  </section>
 
-    <!-- lançamentos do mês -->
-    <table>
-      <tbody id="lista-lancamentos"></tbody>
-    </table>
-  </main>
+  <!-- ================= CADASTRO ================= -->
+  <section id="tela-cadastro" class="tela-entrada" hidden>
+    <form id="form-cadastro" class="cartao-entrada blueprint" novalidate>
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="logo"><span class="logo-marca">R$</span><span class="logo-nome">Troco Certo</span></div>
+      <h2>Criar conta</h2>
+      <label>Nome <input id="cadastro-nome" autocomplete="name"></label>
+      <label>E-mail <input id="cadastro-email" type="email" autocomplete="email"></label>
+      <label>Senha (mín. 6 caracteres) <input id="cadastro-senha" type="password" autocomplete="new-password"></label>
+      <p id="cadastro-erro" class="erro" role="alert"></p>
+      <button type="submit" class="botao-principal">Criar conta</button>
+      <p class="trocar">Já tem conta? <button type="button" class="link" data-trocar-para="login">Entrar</button></p>
+    </form>
+  </section>
 
+  <!-- ================= APLICATIVO (depois do login) ================= -->
+  <div id="app" hidden>
+
+    <header class="topo">
+      <div class="logo"><span class="logo-marca">R$</span><span class="logo-nome">Troco Certo</span></div>
+      <nav class="menu">
+        <button type="button" data-aba="painel">Painel</button>
+        <button type="button" data-aba="config">Configurações</button>
+      </nav>
+      <div class="usuario">
+        <span id="usuario-nome"></span>
+        <button type="button" class="botao-borda" data-sair>Sair</button>
+      </div>
+    </header>
+
+    <!-- -------- PAINEL -------- -->
+    <main id="tela-painel" class="conteudo">
+
+      <div class="linha-mes">
+        <button type="button" id="mes-anterior" class="botao-quadrado" aria-label="Mês anterior">←</button>
+        <h2 id="mes-atual"></h2>
+        <button type="button" id="mes-seguinte" class="botao-quadrado" aria-label="Próximo mês">→</button>
+        <button type="button" id="mes-hoje" class="link">Hoje</button>
+        <button type="button" class="interruptor" aria-pressed="true">
+          <span class="trilho"><span class="bolinha"></span></span>
+          Descontar os imprevistos do saldo
+        </button>
+      </div>
+
+      <div class="resumo">
+        <div class="resumo-saldo">
+          <span class="rotulo">Saldo do mês</span>
+          <strong id="saldo">R$ 0,00</strong>
+          <small id="saldo-nota"></small>
+        </div>
+        <div>
+          <span class="rotulo">+ Entradas</span>
+          <strong id="total-entradas" class="valor-entrada">R$ 0,00</strong>
+        </div>
+        <div>
+          <span class="rotulo">− Saídas</span>
+          <strong id="total-saidas">R$ 0,00</strong>
+        </div>
+        <div>
+          <span class="rotulo">! Imprevistos</span>
+          <strong id="total-imprevistos">R$ 0,00</strong>
+          <small id="imprevistos-nota"></small>
+        </div>
+      </div>
+
+      <div class="colunas">
+
+        <!-- calendário -->
+        <section class="caixa calendario">
+          <div class="semana">
+            <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+          </div>
+          <div id="dias" class="dias"></div>
+          <p class="legenda">+ entrou · − saiu · ! imprevisto — clique num dia para ver só ele e lançar nessa data.</p>
+        </section>
+
+        <div class="coluna-direita">
+
+          <!-- formulário (no celular vira um painel que sobe de baixo) -->
+          <form id="formulario" class="caixa formulario" novalidate>
+            <div class="form-topo">
+              <h3 id="form-titulo">Novo lançamento</h3>
+              <button type="button" id="cancelar-edicao" class="link" hidden>Cancelar</button>
+              <button type="button" id="fechar-formulario" class="botao-fechar" aria-label="Fechar">✕</button>
+            </div>
+            <div class="tipos">
+              <button type="button" data-tipo="entrada">Entrada</button>
+              <button type="button" data-tipo="saida">Saída</button>
+              <button type="button" data-tipo="imprevisto">Imprevisto</button>
+            </div>
+            <div class="duas">
+              <select id="campo-categoria" aria-label="Categoria"></select>
+              <input id="campo-data" type="date" aria-label="Data">
+            </div>
+            <input id="campo-descricao" maxlength="80" placeholder="Descrição">
+            <div class="valor-e-botao">
+              <input id="campo-valor" inputmode="decimal" placeholder="Valor (R$)">
+              <button type="submit" id="botao-salvar" class="botao-principal">Adicionar</button>
+            </div>
+            <p id="mensagem" class="mensagem" role="status"></p>
+          </form>
+
+          <!-- lista -->
+          <section class="caixa lista">
+            <div class="lista-topo">
+              <h3 id="lista-titulo">Lançamentos do mês</h3>
+              <button type="button" id="ver-mes" class="link" hidden>Ver o mês todo</button>
+            </div>
+            <div id="lista-lancamentos" class="lista-itens"></div>
+          </section>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- -------- CONFIGURAÇÕES -------- -->
+    <main id="tela-config" class="conteudo estreito" hidden>
+      <h2>Configurações</h2>
+
+      <div class="cartoes-config">
+        <section class="caixa cartao-config">
+          <h3>Saldo</h3>
+          <button type="button" class="interruptor" aria-pressed="true">
+            <span class="trilho"><span class="bolinha"></span></span>
+            Descontar os imprevistos do saldo
+          </button>
+          <p class="nota">Desligado: o saldo mostra só entradas − saídas, e os imprevistos aparecem à parte.</p>
+        </section>
+
+        <section class="caixa cartao-config">
+          <h3>Reserva para imprevistos</h3>
+          <label class="reserva">Guardar <input id="reserva-pct" type="number" min="0" max="100" step="1"> % das entradas</label>
+          <p id="reserva-nota" class="nota"></p>
+        </section>
+      </div>
+
+      <section class="caixa cartao-config">
+        <h3>Categorias</h3>
+        <div id="grupos-categorias" class="grupos"></div>
+      </section>
+
+      <section class="caixa conta">
+        <h3>Conta</h3>
+        <span><span id="conta-nome"></span> · <span id="conta-email" class="nota"></span></span>
+        <button type="button" class="botao-borda" data-sair>Sair da conta</button>
+      </section>
+    </main>
+
+    <!-- -------- só no celular -------- -->
+    <button type="button" id="abrir-formulario" class="botao-principal botao-flutuante">+ Lançamento</button>
+    <div id="fundo-formulario" class="fundo-formulario"></div>
+    <nav class="menu-baixo">
+      <button type="button" data-aba="painel">Painel</button>
+      <button type="button" data-aba="config">Configurações</button>
+    </nav>
+  </div>
+
+  <!-- a ordem importa: util e api primeiro, auth por último (ele liga tudo) -->
   <script src="js/util.js"></script>
+  <script src="js/api-demo.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/painel.js"></script>
+  <script src="js/calendario.js"></script>
   <script src="js/lista.js"></script>
   <script src="js/formulario.js"></script>
-  <script src="js/resumo.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
 </body>
 </html>

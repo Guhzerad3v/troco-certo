@@ -3,6 +3,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const rotas = require('./rotas');
+const { prepararBanco } = require('./banco');
 
 const PORTA = 3000;
 const PASTA_FRONT = path.join(__dirname, '..', 'frontend');
@@ -47,6 +48,20 @@ const servidor = http.createServer(async function (req, res) {
   }
 });
 
-servidor.listen(PORTA, function () {
-  console.log('Troco Certo rodando em http://localhost:' + PORTA);
-});
+// Antes de ligar: confere o .env e prepara o banco (cria as tabelas se precisar)
+if (!process.env.DB_NOME || !process.env.SEGREDO_SESSAO) {
+  console.log('Falta o arquivo backend/.env. Copie o .env.exemplo para .env e preencha.');
+  process.exit(1);
+}
+
+prepararBanco()
+  .then(function () {
+    servidor.listen(PORTA, function () {
+      console.log('Troco Certo rodando em http://localhost:' + PORTA);
+    });
+  })
+  .catch(function (erro) {
+    console.log('Não consegui conectar no MySQL. Confira se ele está ligado e se o .env está certo.');
+    console.log('Detalhe: ' + erro.message);
+    process.exit(1);
+  });

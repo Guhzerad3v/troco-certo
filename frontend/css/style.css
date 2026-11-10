@@ -1,168 +1,530 @@
-/* Troco Certo - tema azul
-   verde: dinheiro que entra | vermelho: que sai | laranja: imprevisto */
+/* Troco Certo — o nosso CSS.
+   As cores, fontes e espaços vêm do industry.css (o design system):
+   var(--color-...), var(--font-...), var(--space-...).
+   Aqui só montamos o layout das telas.
+   No fim do arquivo fica a parte do celular (@media). */
 
-body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 24px 16px;
-  color: #1f2d3d;
+/* Cores com significado: verde entrou, cinza-escuro saiu, laranja imprevisto */
+:root {
+  --cor-entrou: #2f7a4b;
+  --cor-saiu: var(--color-text);
+  --cor-imprevisto: #b45f12;
+  --cor-erro: #b3261e;
 }
 
-/* topo: moeda e nome no centro */
-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
+/* Tudo que tem o atributo hidden some de verdade */
+[hidden] { display: none !important; }
 
-header h1 {
-  margin: 0;
-  color: #1e5aa8;
-}
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
 
-/* moeda do logo: um quadrado com borda redonda vira círculo */
-.moeda {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #ffd54f;
-  color: #7a5c00;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/* meses */
-.meses {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin: 12px 0;
-}
-
-/* resumo: tudo centralizado, separado só por duas linhas finas */
-.resumo {
-  text-align: center;
-  padding: 16px 0;
-  border-top: 1px solid #e3eaf3;
-  border-bottom: 1px solid #e3eaf3;
-}
+/* ---------- peças pequenas usadas em vários lugares ---------- */
 
 .rotulo {
-  margin: 0;
-  font-size: 14px;
-  color: #7a8ca3;
+  font-family: var(--font-heading);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
 }
 
-.saldo {
-  margin: 4px 0 12px;
-  font-size: 40px;
-  font-weight: bold;
-  color: #16325c;
+.nota, small { color: var(--color-neutral-700); font-size: 13px; }
+
+.caixa {
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
 }
 
-.totais {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  font-size: 14px;
+/* campos de texto */
+input, select {
+  min-height: 38px;
+  padding: 6px 10px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  width: 100%;
+}
+input:focus-visible, select:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+
+/* botão azul cheio */
+.botao-principal {
+  min-height: 38px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-600);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+}
+.botao-principal:hover { background: var(--color-accent-700); }
+
+/* botão só com borda (Sair) */
+.botao-borda {
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  background: transparent;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+.botao-borda:hover { background: var(--color-neutral-200); }
+
+/* botão que parece link */
+.link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--color-accent-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.totais p {
-  margin: 0 0 12px;
+.botao-quadrado {
+  width: 34px;
+  height: 34px;
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
 }
+.botao-quadrado:hover { background: var(--color-neutral-200); }
 
-/* cores com sentido (usadas no resumo e na lista) */
-.entrada {
-  color: #2e7d32;
+.erro { color: var(--cor-erro); min-height: 1.4em; margin: 0; font-size: 14px; }
+.mensagem { min-height: 1.4em; margin: 0; font-size: 14px; color: var(--color-accent-700); }
+
+/* valores coloridos */
+.valor-entrada { color: var(--cor-entrou); }
+.valor-saida { color: var(--cor-saiu); }
+.valor-imprevisto { color: var(--cor-imprevisto); }
+
+/* logo "R$ Troco Certo" */
+.logo { display: flex; align-items: center; gap: var(--space-2); }
+.logo-marca {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-600);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 600;
 }
+.logo-nome { font-family: var(--font-heading); font-weight: 600; font-size: 20px; }
 
-.saida {
-  color: #c62828;
-}
+/* o que muda entre PC e celular */
+.so-celular { display: none; }
 
-.imprevisto {
-  color: #ef6c00;
-}
+/* ---------- faixa do modo demonstração ---------- */
 
-/* formulário numa linha só */
-form {
+.faixa-demo {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 20px;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: 6px var(--space-4);
+  background: var(--color-accent-100);
+  border-bottom: 1px solid var(--color-accent-300);
+  font-size: 13px;
 }
 
-#campo-descricao {
-  flex: 1;
-  min-width: 140px;
+/* ---------- login e cadastro ---------- */
+
+.tela-entrada {
+  min-height: 90vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6) 16px;
 }
 
-input,
-select,
-button {
-  font-family: inherit;
-  font-size: 14px;
-  padding: 8px 10px;
-  border: 1px solid #c9d8ea;
-  border-radius: 8px;
-}
-
-input[type="checkbox"] {
-  accent-color: #1e5aa8;
-}
-
-button {
-  background-color: #1e5aa8;
-  border-color: #1e5aa8;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #154785;
-}
-
-#mensagem {
-  font-size: 14px;
-  color: #7a8ca3;
-}
-
-/* lista de lançamentos */
-table {
+.cartao-entrada {
   width: 100%;
-  border-collapse: collapse;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+  background: #fff;
+}
+.cartao-entrada h2 { margin: var(--space-2) 0 0; }
+.cartao-entrada label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.cartao-entrada .trocar { margin: 0; font-size: 14px; text-align: center; }
+
+/* ---------- topo do aplicativo ---------- */
+
+.topo {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: 0 var(--space-6);
+  background: #fff;
+  border-bottom: 1px solid var(--color-divider);
 }
 
-td {
-  padding: 8px 4px;
-  border-bottom: 1px solid #eef2f7;
+.menu { display: flex; gap: var(--space-1); }
+.menu button, .menu-baixo button {
+  background: none;
+  border: 0;
+  padding: 6px var(--space-3);
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-size: 17px;
+  color: var(--color-neutral-700);
+}
+.menu button.ativo, .menu-baixo button.ativo { color: var(--color-accent-700); background: var(--color-accent-100); }
+
+.usuario { margin-left: auto; display: flex; align-items: center; gap: var(--space-3); font-size: 14px; }
+
+/* ---------- painel ---------- */
+
+.conteudo {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6);
+}
+.conteudo.estreito { max-width: 900px; }
+
+/* ← Novembro de 2026 → Hoje  [interruptor] */
+.linha-mes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.linha-mes h2 { margin: 0; min-width: 210px; text-align: center; font-size: 28px; }
+.linha-mes .interruptor { margin-left: auto; }
+
+/* interruptor (liga/desliga) */
+.interruptor {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 14px;
+  text-align: left;
+}
+.trilho {
+  flex: none;
+  position: relative;
+  width: 38px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--color-neutral-400);
+  transition: background 0.15s;
+}
+.bolinha {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.15s;
+}
+.interruptor[aria-pressed="true"] .trilho { background: var(--color-accent-600); }
+.interruptor[aria-pressed="true"] .bolinha { left: 19px; }
+
+/* os 4 números do resumo */
+.resumo {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.resumo > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+.resumo strong { font-family: var(--font-heading); font-weight: 600; font-size: 24px; }
+.resumo-saldo { background: var(--color-accent-100) !important; border-color: var(--color-accent-300) !important; }
+.resumo-saldo strong { font-size: 32px; color: var(--color-accent-800); }
+#total-imprevistos { color: var(--cor-imprevisto); }
+
+/* calendário à esquerda, formulário + lista à direita */
+.colunas {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+.coluna-direita { display: flex; flex-direction: column; gap: var(--space-4); }
+
+/* ---------- calendário ---------- */
+
+.semana, .dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.semana span { text-align: center; font-size: 12px; color: var(--color-neutral-700); padding-bottom: 4px; }
+
+.dia {
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1px;
+  padding: 4px 6px;
+  background: var(--color-neutral-100);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.dia.vazio { background: transparent; }
+button.dia:hover { border-color: var(--color-accent-400); }
+.dia.hoje .dia-numero { color: var(--color-accent-700); font-weight: 700; text-decoration: underline; }
+.dia.selecionado { background: var(--color-accent-100); border-color: var(--color-accent-600); }
+
+.dia-topo { display: flex; justify-content: space-between; }
+.dia-numero { font-size: 13px; }
+.dia-imprevisto { color: var(--cor-imprevisto); font-weight: 700; }
+.dia-entrou { color: var(--cor-entrou); }
+.dia-saiu { color: var(--cor-saiu); }
+.pontinhos { display: none; } /* os pontinhos só aparecem no celular */
+
+.legenda { margin: var(--space-3) 0 0; font-size: 13px; color: var(--color-neutral-700); }
+
+/* ---------- formulário ---------- */
+
+.formulario { display: flex; flex-direction: column; gap: var(--space-3); }
+.form-topo { display: flex; align-items: center; gap: var(--space-3); }
+.form-topo h3 { margin: 0; font-size: 22px; }
+.botao-fechar { display: none; } /* o ✕ só existe no celular */
+
+/* Entrada | Saída | Imprevisto */
+.tipos { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--color-divider); border-radius: var(--radius-md); overflow: hidden; }
+.tipos button { min-height: 36px; background: #fff; border: 0; }
+.tipos button + button { border-left: 1px solid var(--color-divider); }
+.tipos button[aria-pressed="true"] { background: var(--color-accent-600); color: #fff; }
+
+.duas { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+.valor-e-botao { display: grid; grid-template-columns: 1fr auto; gap: var(--space-2); }
+
+/* ---------- lista de lançamentos ---------- */
+
+.lista-topo { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--space-2); }
+.lista-topo h3 { margin: 0; font-size: 22px; }
+
+.lista-itens { max-height: 300px; overflow-y: auto; }
+.lista-vazia { color: var(--color-neutral-700); font-size: 14px; padding: var(--space-3) 0; }
+
+.linha {
+  display: grid;
+  grid-template-columns: 18px 46px 1fr auto auto 64px;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--color-divider);
+  font-size: 14px;
+}
+.linha.em-edicao { background: var(--color-accent-100); }
+.marca { font-weight: 700; text-align: center; }
+.linha-data { color: var(--color-neutral-700); font-size: 13px; }
+.linha-texto {
+  display: flex;
+  flex-direction: column;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  min-width: 0;
+}
+.linha-texto small { font-size: 12px; }
+.valor { font-weight: 700; white-space: nowrap; }
+
+.excluir {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  color: var(--color-neutral-600);
+}
+.excluir:hover { color: var(--cor-erro); }
+.excluir.confirmando { background: var(--cor-erro); color: #fff; }
+
+/* ---------- configurações ---------- */
+
+.cartoes-config {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.cartao-config h3, .conta h3 { font-size: 22px; }
+.cartao-config .interruptor { margin-bottom: var(--space-2); }
+
+.reserva { display: flex; align-items: center; gap: var(--space-2); }
+.reserva input { width: 80px; }
+
+.grupos { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+.grupo { display: flex; flex-direction: column; gap: var(--space-2); }
+.grupo-itens { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.categoria {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 10px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  font-size: 14px;
+}
+.categoria small { font-size: 11px; }
+.categoria button { background: none; border: 0; padding: 0 4px; color: var(--color-neutral-600); }
+.categoria button:hover:not(:disabled) { color: var(--cor-erro); }
+.categoria button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.nova-categoria { display: grid; grid-template-columns: 1fr auto; gap: 4px; }
+.nova-categoria input { min-height: 32px; }
+.nova-categoria button {
+  width: 32px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-600);
+  color: #fff;
 }
 
-small {
-  color: #7a8ca3;
+.conta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
 }
+.conta h3 { margin: 0; }
+.conta .botao-borda { margin-left: auto; }
 
-.valor {
-  text-align: right;
-  white-space: nowrap;
-  font-weight: bold;
-}
+/* coisas que só existem no celular */
+.botao-flutuante, .fundo-formulario, .menu-baixo { display: none; }
 
-/* botão de excluir: só um X discreto */
-button.excluir {
-  background-color: transparent;
-  border-color: transparent;
-  color: #c62828;
-  padding: 2px 8px;
-}
 
-button.excluir:hover {
-  background-color: #fbe7e7;
+/* =====================================================================
+   CELULAR (tela de até 700px)
+   ===================================================================== */
+@media (max-width: 700px) {
+
+  .so-pc { display: none !important; }
+  .so-celular { display: inline; }
+
+  /* topo mais baixo; o menu vai para baixo da tela */
+  .topo { height: 52px; padding: 0 16px; }
+  .topo .menu { display: none; }
+  .usuario #usuario-nome { display: none; }
+
+  .conteudo { padding: 16px 16px 140px; } /* espaço para o botão e o menu de baixo */
+
+  /* botões maiores para o dedo */
+  .botao-quadrado { width: 44px; height: 44px; }
+  .botao-principal, input, select { min-height: 44px; }
+
+  .linha-mes h2 { min-width: 0; flex: 1; font-size: 22px; }
+  .linha-mes .interruptor { margin-left: 0; width: 100%; }
+
+  /* resumo: saldo em cima, os outros 3 lado a lado */
+  .resumo { grid-template-columns: 1fr 1fr 1fr; }
+  .resumo-saldo { grid-column: 1 / -1; }
+  .resumo > div { padding: var(--space-2) var(--space-3); }
+  .resumo strong { font-size: 17px; }
+  .resumo-saldo strong { font-size: 28px; }
+  .resumo small { font-size: 11px; }
+
+  .colunas { grid-template-columns: 1fr; }
+  .caixa { padding: var(--space-3); }
+
+  /* calendário: quadradinhos de 44px só com o número e pontinhos coloridos */
+  .dia { min-height: 44px; align-items: center; padding: 4px 2px; }
+  .dia-topo { justify-content: center; }
+  .dia-imprevisto, .dia-entrou, .dia-saiu { display: none; }
+  .pontinhos { display: flex; gap: 3px; }
+  .pontinhos i { width: 5px; height: 5px; border-radius: 50%; }
+  .pontinhos i.apagado { visibility: hidden; }
+  .ponto-entrou { background: var(--cor-entrou); }
+  .ponto-saiu { background: var(--color-neutral-800); }
+  .ponto-imprevisto { background: var(--cor-imprevisto); }
+
+  /* lista: a linha inteira é tocável para editar */
+  .lista-itens { max-height: none; }
+  .linha { grid-template-columns: 18px 1fr auto 52px; min-height: 52px; }
+  .excluir { min-height: 36px; }
+
+  /* botão "+ Lançamento" flutuando acima do menu de baixo */
+  .botao-flutuante {
+    display: block;
+    position: fixed;
+    right: 16px;
+    bottom: 72px;
+    z-index: 5;
+    min-height: 48px;
+    box-shadow: var(--shadow-md);
+  }
+  body[data-aba="config"] .botao-flutuante { display: none; }
+
+  /* menu de baixo com as duas abas */
+  .menu-baixo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    height: 56px;
+    background: #fff;
+    border-top: 1px solid var(--color-divider);
+  }
+  .menu-baixo button { border-radius: 0; }
+
+  /* O formulário vira um painel que sobe de baixo.
+     Fica escondido e só aparece quando o body tem a classe "formulario-aberto". */
+  .formulario {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 11;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: var(--space-6) 16px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    box-shadow: var(--shadow-lg);
+  }
+  body.formulario-aberto .formulario { display: flex; }
+  .botao-fechar {
+    display: block;
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: 0;
+    font-size: 18px;
+  }
+
+  /* fundo escuro atrás do painel (tocar nele fecha) */
+  body.formulario-aberto .fundo-formulario {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  /* configurações: tudo em uma coluna */
+  .cartoes-config, .grupos { grid-template-columns: 1fr; }
+  .conta .botao-borda { margin-left: 0; width: 100%; min-height: 44px; }
 }

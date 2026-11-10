@@ -12,6 +12,7 @@ build/
 .env
 .env.*
 !.env.example
+!.env.exemplo
 
 # Logs
 *.log
@@ -25,3 +26,4 @@ Thumbs.db
 
 # banco criado pelo servidor
 database/*.db
+
