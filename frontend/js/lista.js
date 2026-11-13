@@ -33,7 +33,7 @@ function desenharLista() {
 
     html += `
       <div class="linha${emEdicao}">
-        <span class="marca">${MARCA[item.tipo]}</span>
+        <span class="marca marca-${item.tipo}">${MARCA[item.tipo]}</span>
         <span class="linha-data so-pc">${diaEMes(item.data)}</span>
         <button type="button" class="linha-texto" title="Editar" onclick="editar(${item.id})">
           ${escaparHtml(item.descricao)}

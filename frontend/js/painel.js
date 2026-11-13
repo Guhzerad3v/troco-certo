@@ -49,11 +49,28 @@ function desenharResumo() {
     pegar('imprevistos-nota').textContent = 'fora do saldo';
   }
 
+  // as notas dos cartões de Entradas e Saídas (aparecem quando o cartão vem para a frente)
+  pegar('entradas-nota').textContent =
+    'reserva sugerida (' + r.reserva_pct + '%): ' + formatarReais(r.reserva_centavos);
+  const quantas = estado.lancamentos.filter(item => item.tipo === 'saida').length;
+  pegar('saidas-nota').textContent = quantas === 1 ? '1 lançamento neste mês' : quantas + ' lançamentos neste mês';
+
   // os dois interruptores (Painel e Configurações) mostram a mesma coisa
   document.querySelectorAll('.interruptor').forEach(function (botao) {
     botao.setAttribute('aria-pressed', r.incluir_imprevistos ? 'true' : 'false');
   });
 }
+
+// Carteira: tocar num cartão traz ele para a frente da pilha.
+// O JavaScript só troca a classe "frente"; quem move e aumenta o cartão é o CSS.
+document.querySelectorAll('.cartao').forEach(function (cartao) {
+  cartao.addEventListener('click', function () {
+    document.querySelectorAll('.cartao').forEach(function (outro) {
+      outro.classList.toggle('frente', outro === cartao);
+      outro.setAttribute('aria-expanded', outro === cartao ? 'true' : 'false');
+    });
+  });
+});
 
 // Troca de mês: limpa o dia escolhido e recarrega
 function trocarMes(novoMes) {

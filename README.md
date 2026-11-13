@@ -2,12 +2,12 @@
 
 Site para organizar o próprio dinheiro de um jeito simples: você anota o que **entrou**, o que **saiu** e os **imprevistos**, e vê o saldo do mês num calendário.
 
-Dá para ver uma prévia online, no modo demonstração (explicado no fim deste arquivo), assim que o front for publicado na Vercel.
+Prévia online, no modo demonstração (explicado no fim deste arquivo): https://troco-certo-crud.vercel.app
 
 ## O que o sistema faz
 
 - **Login e cadastro.** Cada pessoa tem a própria conta, e a senha é guardada embaralhada (hash), nunca em texto.
-- **Painel do mês.** Mostra o saldo, as entradas, as saídas e os imprevistos, além de um calendário com o que aconteceu em cada dia. Ao clicar num dia, a lista mostra só aquele dia e o formulário passa a lançar nessa data.
+- **Painel do mês.** Mostra uma carteira com quatro cartões (saldo, entradas, saídas e imprevistos), além de um calendário com o que aconteceu em cada dia. Ao clicar num dia, a lista mostra só aquele dia e o formulário passa a lançar nessa data.
 - **CRUD de lançamentos.** Dá para criar, ver, editar e excluir. A exclusão pede confirmação com um segundo clique.
 - **CRUD de categorias.** Na tela de Configurações dá para criar e apagar categorias. Uma categoria que já tem lançamentos não pode ser apagada.
 - **Configurações.**
@@ -17,7 +17,7 @@ Dá para ver uma prévia online, no modo demonstração (explicado no fim deste 
 
 ## Tecnologias
 
-- **Front-end:** HTML, CSS e JavaScript puros, sem framework. As cores e as fontes (Barlow) vêm do design system *Industry*, no arquivo `frontend/css/industry.css`.
+- **Front-end:** HTML, CSS e JavaScript puros, sem framework. O visual é inspirado na Carteira da Apple e em apps de banco: o resumo do mês é uma pilha de cartões coloridos (tocar num cartão traz ele para a frente), com cartões brancos, barras foscas e o "verde troco" como cor da marca. Tem tema claro e escuro, que segue o aparelho. As cores e medidas ficam em variáveis no começo do `frontend/css/style.css`.
 - **Back-end:** Node.js puro, usando os módulos `http`, `fs` e `crypto`. A única biblioteca instalada é a `mysql2`, que conecta o Node ao MySQL.
 - **Banco de dados:** MySQL 8.
 
@@ -48,7 +48,7 @@ backend/
 
 frontend/
   index.html      as telas: login, cadastro, painel e configurações
-  css/            industry.css (design system) e style.css (layout)
+  css/style.css   o visual inteiro (cores em variáveis no começo, celular no fim)
   js/util.js        estado da tela e funções pequenas (formatar R$, datas)
   js/api.js         as chamadas ao servidor (fetch)
   js/api-demo.js    "servidor de mentira" do modo demonstração

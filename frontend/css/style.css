@@ -1,420 +1,627 @@
-/* Troco Certo — o nosso CSS.
-   As cores, fontes e espaços vêm do industry.css (o design system):
-   var(--color-...), var(--font-...), var(--space-...).
-   Aqui só montamos o layout das telas.
-   No fim do arquivo fica a parte do celular (@media). */
+/* Troco Certo — visual inspirado na Carteira da Apple e em apps de banco:
+   fundo neutro, cartões brancos, uma pilha de cartões coloridos para o resumo,
+   barras "de vidro" (foscas) e o "verde troco" como cor da marca.
+   Tem tema claro e escuro: segue o que estiver escolhido no aparelho.
 
-/* Cores com significado: verde entrou, cinza-escuro saiu, laranja imprevisto */
+   Ordem do arquivo:
+   1. cores e medidas (variáveis)   5. painel (mês, carteira, calendário, formulário, lista)
+   2. base                          6. configurações
+   3. peças pequenas                7. celular (@media)
+   4. login e topo                                                              */
+
+/* ---------- 1. cores e medidas ---------- */
 :root {
-  --cor-entrou: #2f7a4b;
-  --cor-saiu: var(--color-text);
-  --cor-imprevisto: #b45f12;
-  --cor-erro: #b3261e;
+  --fundo: #f5f5f7;
+  --cartao: #ffffff;
+  --campo: #f2f2f4;                 /* fundo dos campos de texto */
+  --dia: #f9f9fb;                   /* quadradinho do calendário */
+  --dia-sobre: #efeff2;             /* ...com o mouse em cima */
+  --controle: rgba(118, 118, 128, 0.12);   /* fundo de abas e botões cinza */
+  --plaquinha: #ffffff;             /* a aba ativa dentro do controle */
+  --trilho: #d1d1d6;                /* interruptor desligado */
+  --vidro: rgba(245, 245, 247, 0.72);      /* barras foscas */
+  --texto: #1d1d1f;
+  --texto-suave: #6e6e73;
+  --linha: rgba(0, 0, 0, 0.08);
+  --botao: #1c1c1e;                 /* botão principal */
+  --botao-sobre: #3a3a3c;
+  --botao-texto: #ffffff;
+
+  --marca: #1f8a5b;                 /* "verde troco": seleção, hoje, aba ativa */
+  --marca-texto: #17764c;           /* o mesmo verde, mais escuro, para textos e links */
+  --marca-clara: rgba(31, 138, 91, 0.10);
+  --verde: #17764c;                 /* dinheiro que entrou */
+  --verde-claro: #e3f4ea;
+  --laranja: #a85a00;               /* imprevisto */
+  --laranja-claro: #fff1df;
+  --vermelho: #d70015;              /* erro e excluir */
+  --vermelho-claro: #fdebec;
+
+  --raio-cartao: 20px;
+  --raio-campo: 12px;
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
+  --sombra-forte: 0 2px 6px rgba(0, 0, 0, 0.06), 0 24px 48px rgba(0, 0, 0, 0.10);
+  --fonte: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
 }
 
-/* Tudo que tem o atributo hidden some de verdade */
-[hidden] { display: none !important; }
+/* tema escuro: só trocamos o valor das variáveis, o resto do CSS é o mesmo */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #000000;
+    --cartao: #1c1c1e;
+    --campo: #2c2c2e;
+    --dia: #232325;
+    --dia-sobre: #2f2f31;
+    --controle: rgba(118, 118, 128, 0.26);
+    --plaquinha: #636366;
+    --trilho: #48484a;
+    --vidro: rgba(22, 22, 24, 0.72);
+    --texto: #f5f5f7;
+    --texto-suave: #a1a1a6;
+    --linha: rgba(255, 255, 255, 0.12);
+    --botao: #f5f5f7;
+    --botao-sobre: #d1d1d6;
+    --botao-texto: #1d1d1f;
 
+    --marca: #2aa772;
+    --marca-texto: #4cd19a;
+    --marca-clara: rgba(42, 167, 114, 0.20);
+    --verde: #4cd19a;
+    --verde-claro: rgba(48, 209, 88, 0.16);
+    --laranja: #ffb340;
+    --laranja-claro: rgba(255, 159, 10, 0.18);
+    --vermelho: #ff6961;
+    --vermelho-claro: rgba(255, 69, 58, 0.18);
+
+    --sombra: none;
+    --sombra-forte: 0 24px 48px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ---------- 2. base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; } /* tudo que tem o atributo hidden some de verdade */
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+p { margin: 0; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 
-/* ---------- peças pequenas usadas em vários lugares ---------- */
+/* números de dinheiro com algarismos da mesma largura (não "dançam" ao mudar) */
+strong, .valor, .dia { font-variant-numeric: tabular-nums; }
 
-.rotulo {
-  font-family: var(--font-heading);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-neutral-700);
-}
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
 
-.nota, small { color: var(--color-neutral-700); font-size: 13px; }
+svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
+/* ---------- 3. peças pequenas ---------- */
+
+.rotulo { font-size: 13px; font-weight: 500; color: var(--texto-suave); }
+.nota, small { font-size: 13px; color: var(--texto-suave); }
+
+/* cartão branco */
 .caixa {
-  background: #fff;
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
+  background: var(--cartao);
+  border-radius: var(--raio-cartao);
+  padding: 20px;
+  box-shadow: var(--sombra);
 }
 
 /* campos de texto */
 input, select {
-  min-height: 38px;
-  padding: 6px 10px;
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
   width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--campo);
+  border: 1px solid transparent;
+  border-radius: var(--raio-campo);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
-input:focus-visible, select:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+input::placeholder { color: #8a8a8e; }
+input:focus, select:focus {
+  border-color: var(--marca);
+  box-shadow: 0 0 0 4px var(--marca-clara);
+  outline: none;
+}
+/* o select ganha a nossa setinha no lugar da do navegador */
+select {
+  appearance: none;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%238a8a8e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+}
 
-/* botão azul cheio */
+/* botão principal: escuro, como os botões de pagamento */
 .botao-principal {
-  min-height: 38px;
-  padding: 0 var(--space-4);
+  height: 44px;
+  padding: 0 20px;
   border: 0;
-  border-radius: var(--radius-md);
-  background: var(--color-accent-600);
-  color: #fff;
-  font-family: var(--font-heading);
+  border-radius: var(--raio-campo);
+  background: var(--botao);
+  color: var(--botao-texto);
   font-weight: 600;
-  font-size: 16px;
+  transition: background 0.15s, transform 0.1s;
 }
-.botao-principal:hover { background: var(--color-accent-700); }
+.botao-principal:hover { background: var(--botao-sobre); }
+.botao-principal:active { transform: scale(0.98); }
 
-/* botão só com borda (Sair) */
-.botao-borda {
-  min-height: 32px;
-  padding: 0 var(--space-3);
-  background: transparent;
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
+/* botão discreto, cinza (Sair) */
+.botao-suave {
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--controle);
+  font-size: 13.5px;
+  font-weight: 500;
 }
-.botao-borda:hover { background: var(--color-neutral-200); }
+.botao-suave:hover { filter: brightness(0.94); }
 
 /* botão que parece link */
 .link {
   background: none;
   border: 0;
   padding: 0;
-  color: var(--color-accent-700);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  color: var(--marca-texto);
+  font-weight: 500;
 }
+.link:hover { text-decoration: underline; }
 
-.botao-quadrado {
-  width: 34px;
-  height: 34px;
-  background: #fff;
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
-}
-.botao-quadrado:hover { background: var(--color-neutral-200); }
+.erro { min-height: 1.4em; color: var(--vermelho); font-size: 13.5px; }
+.mensagem { min-height: 1.4em; color: var(--texto-suave); font-size: 13.5px; }
 
-.erro { color: var(--cor-erro); min-height: 1.4em; margin: 0; font-size: 14px; }
-.mensagem { min-height: 1.4em; margin: 0; font-size: 14px; color: var(--color-accent-700); }
-
-/* valores coloridos */
-.valor-entrada { color: var(--cor-entrou); }
-.valor-saida { color: var(--cor-saiu); }
-.valor-imprevisto { color: var(--cor-imprevisto); }
-
-/* logo "R$ Troco Certo" */
-.logo { display: flex; align-items: center; gap: var(--space-2); }
+/* logo: quadradinho com "R$" na cor da marca */
+.logo { display: flex; align-items: center; gap: 10px; }
 .logo-marca {
   display: grid;
   place-items: center;
   width: 30px;
   height: 30px;
-  border-radius: var(--radius-md);
-  background: var(--color-accent-600);
+  border-radius: 9px;
+  background: #1f8a5b;
   color: #fff;
-  font-family: var(--font-heading);
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
-.logo-nome { font-family: var(--font-heading); font-weight: 600; font-size: 20px; }
+.logo-nome { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
 
 /* o que muda entre PC e celular */
 .so-celular { display: none; }
 
-/* ---------- faixa do modo demonstração ---------- */
-
-.faixa-demo {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-3);
-  padding: 6px var(--space-4);
-  background: var(--color-accent-100);
-  border-bottom: 1px solid var(--color-accent-300);
-  font-size: 13px;
-}
-
-/* ---------- login e cadastro ---------- */
-
-.tela-entrada {
-  min-height: 90vh;
-  display: grid;
-  place-items: center;
-  padding: var(--space-6) 16px;
-}
-
-.cartao-entrada {
-  width: 100%;
-  max-width: 380px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-8) var(--space-6);
-  background: #fff;
-}
-.cartao-entrada h2 { margin: var(--space-2) 0 0; }
-.cartao-entrada label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
-.cartao-entrada .trocar { margin: 0; font-size: 14px; text-align: center; }
-
-/* ---------- topo do aplicativo ---------- */
-
-.topo {
-  height: 56px;
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
-  padding: 0 var(--space-6);
-  background: #fff;
-  border-bottom: 1px solid var(--color-divider);
-}
-
-.menu { display: flex; gap: var(--space-1); }
-.menu button, .menu-baixo button {
-  background: none;
-  border: 0;
-  padding: 6px var(--space-3);
-  border-radius: var(--radius-md);
-  font-family: var(--font-heading);
-  font-size: 17px;
-  color: var(--color-neutral-700);
-}
-.menu button.ativo, .menu-baixo button.ativo { color: var(--color-accent-700); background: var(--color-accent-100); }
-
-.usuario { margin-left: auto; display: flex; align-items: center; gap: var(--space-3); font-size: 14px; }
-
-/* ---------- painel ---------- */
-
-.conteudo {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--space-6);
-}
-.conteudo.estreito { max-width: 900px; }
-
-/* ← Novembro de 2026 → Hoje  [interruptor] */
-.linha-mes {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-}
-.linha-mes h2 { margin: 0; min-width: 210px; text-align: center; font-size: 28px; }
-.linha-mes .interruptor { margin-left: auto; }
-
-/* interruptor (liga/desliga) */
+/* interruptor (liga/desliga), igual ao do iPhone */
 .interruptor {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 10px;
   background: none;
   border: 0;
   padding: 0;
   font-size: 14px;
+  color: var(--texto-suave);
   text-align: left;
 }
 .trilho {
   flex: none;
   position: relative;
-  width: 38px;
-  height: 22px;
-  border-radius: 11px;
-  background: var(--color-neutral-400);
-  transition: background 0.15s;
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  background: var(--trilho);
+  transition: background 0.2s;
 }
 .bolinha {
   position: absolute;
-  top: 3px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s;
+}
+.interruptor[aria-pressed="true"] .trilho { background: #30b566; }
+.interruptor[aria-pressed="true"] .bolinha { transform: translateX(18px); }
+
+/* bolinhas coloridas (legenda do calendário e pontinhos no celular) */
+.ponto-entrou { background: #30b566; }
+.ponto-saiu { background: #8e8e93; }
+.ponto-imprevisto { background: #ff9500; }
+
+/* ---------- faixa do modo demonstração ---------- */
+.faixa-demo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  padding: 7px 16px;
+  background: #1c1c1e;
+  color: #f5f5f7;
+  font-size: 12.5px;
+}
+.faixa-demo .link { color: #6fdcab; }
+
+/* ---------- 4. login e cadastro ---------- */
+.tela-entrada {
+  min-height: 92vh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+.cartao-entrada {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px 32px 32px;
+  background: var(--cartao);
+  border-radius: 28px;
+  box-shadow: var(--sombra-forte);
+  text-align: center;
+}
+.logo-grande { justify-content: center; margin-bottom: 4px; }
+.logo-grande .logo-marca { width: 56px; height: 56px; border-radius: 16px; font-size: 20px; }
+.cartao-entrada h1 { font-size: 28px; font-weight: 700; }
+.subtitulo { color: var(--texto-suave); margin-bottom: 8px; }
+.campos { display: flex; flex-direction: column; gap: 10px; }
+.campos input { height: 48px; }
+.cartao-entrada .erro { text-align: left; }
+.cartao-entrada .botao-principal { height: 48px; }
+.trocar { margin-top: 4px; font-size: 14px; color: var(--texto-suave); }
+
+/* ---------- topo: barra fosca que fica presa em cima ---------- */
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: var(--vidro);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--linha);
+}
+.topo-dentro {
+  max-width: 1180px;
+  height: 56px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* menu em forma de "controle segmentado": a aba ativa vira uma plaquinha */
+.menu { display: flex; padding: 2px; border-radius: 10px; background: var(--controle); }
+.menu button {
+  height: 30px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.menu button.ativo { background: var(--plaquinha); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+
+.usuario { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--texto-suave); }
+.usuario .botao-suave { color: var(--texto); }
+
+/* ---------- 5. painel ---------- */
+.conteudo { max-width: 1180px; margin: 0 auto; padding: 28px 24px 48px; }
+.conteudo.estreito { max-width: 880px; }
+
+/* ‹ Novembro de 2026 ›   Hoje                      [interruptor] */
+.linha-mes { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+.troca-mes { display: flex; align-items: center; gap: 6px; }
+.troca-mes h2 { min-width: 258px; text-align: center; font-size: 28px; font-weight: 700; }
+.botao-seta {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--controle);
+}
+.botao-seta:hover { filter: brightness(0.92); }
+.linha-mes .interruptor { margin-left: auto; }
+
+/* carteira + calendário à esquerda, formulário + lista à direita */
+.colunas { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: start; }
+.coluna-esquerda, .coluna-direita { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+/* ---------- a carteira: pilha de cartões ----------
+   Todos os cartões têm a mesma altura. Cada um "puxa" o de baixo para cima de si
+   (margem negativa), então só aparece uma faixa dele, com o nome e o valor.
+   O cartão com a classe "frente" vai para o fim da pilha e aparece inteiro. */
+.carteira { display: flex; flex-direction: column; }
+
+.cartao {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr auto;      /* faixa: nome à esquerda, valor à direita */
+  align-content: start;
+  align-items: center;
+  column-gap: 16px;
+  width: 100%;
+  height: 176px;
+  margin-bottom: -114px;                /* sobra uma faixa de 62px à mostra */
+  padding: 19px 24px;
+  border: 0;
+  border-radius: 22px;
+  color: #fff;
+  text-align: left;
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition: transform 0.2s;
+}
+.cartao:not(.frente):hover { transform: translateY(-4px); }
+.cartao:focus-visible { outline-color: var(--texto); outline-offset: 3px; z-index: 2; }
+
+/* uma cor para cada cartão */
+.cartao-saldo { background: linear-gradient(135deg, #323234, #111113); }
+.cartao-entradas { background: linear-gradient(135deg, #1f8a5b, #14613e); }
+.cartao-saidas { background: linear-gradient(135deg, #2a6a90, #1b4666); }
+.cartao-imprevistos { background: linear-gradient(135deg, #ad6f17, #86500f); }
+
+.cartao-rotulo { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.86; }
+.cartao strong { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+.cartao small { display: none; color: rgba(255, 255, 255, 0.82); }
+
+/* o cartão da frente: vai para o fim, aparece inteiro e mostra o valor grande e a nota */
+.cartao.frente {
+  order: 9;
+  z-index: 1;
+  margin-bottom: 0;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  align-content: stretch;
+  padding: 22px 24px;
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.16), var(--sombra-forte);
+  animation: chegar 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cartao.frente strong { align-self: end; font-size: 42px; letter-spacing: -0.03em; line-height: 1.1; }
+.cartao.frente small { display: block; margin-top: 6px; }
+/* dois aros finos de enfeite no canto do cartão da frente */
+.cartao.frente::before, .cartao.frente::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  pointer-events: none;
+}
+.cartao.frente::before { width: 280px; height: 280px; right: -90px; top: -120px; }
+.cartao.frente::after { width: 190px; height: 190px; right: -40px; top: -70px; }
+
+/* ---------- calendário ---------- */
+.semana, .dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.semana span { padding-bottom: 8px; text-align: center; font-size: 12px; font-weight: 500; color: var(--texto-suave); }
+
+.dia {
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--dia);
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.dia.vazio { background: transparent; }
+button.dia:hover { background: var(--dia-sobre); }
+.dia.selecionado, button.dia.selecionado:hover { background: var(--marca-clara); box-shadow: inset 0 0 0 1.5px var(--marca); }
+
+.dia-topo { display: flex; justify-content: space-between; align-items: center; min-height: 24px; }
+.dia-numero { font-size: 13px; font-weight: 500; }
+/* hoje: o número dentro de uma bolinha verde */
+.dia.hoje .dia-numero {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: #1a7f52;
+  color: #fff;
+  font-weight: 600;
+}
+.dia-imprevisto {
+  display: grid;
+  place-items: center;
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #fff;
-  transition: left 0.15s;
+  background: #ff9500;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
 }
-.interruptor[aria-pressed="true"] .trilho { background: var(--color-accent-600); }
-.interruptor[aria-pressed="true"] .bolinha { left: 19px; }
-
-/* os 4 números do resumo */
-.resumo {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-}
-.resumo > div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: var(--space-3) var(--space-4);
-  background: #fff;
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
-}
-.resumo strong { font-family: var(--font-heading); font-weight: 600; font-size: 24px; }
-.resumo-saldo { background: var(--color-accent-100) !important; border-color: var(--color-accent-300) !important; }
-.resumo-saldo strong { font-size: 32px; color: var(--color-accent-800); }
-#total-imprevistos { color: var(--cor-imprevisto); }
-
-/* calendário à esquerda, formulário + lista à direita */
-.colunas {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: var(--space-4);
-  align-items: start;
-}
-.coluna-direita { display: flex; flex-direction: column; gap: var(--space-4); }
-
-/* ---------- calendário ---------- */
-
-.semana, .dias {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-.semana span { text-align: center; font-size: 12px; color: var(--color-neutral-700); padding-bottom: 4px; }
-
-.dia {
-  min-height: 76px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 1px;
-  padding: 4px 6px;
-  background: var(--color-neutral-100);
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  text-align: left;
-  font-size: 12px;
-  line-height: 1.3;
-}
-.dia.vazio { background: transparent; }
-button.dia:hover { border-color: var(--color-accent-400); }
-.dia.hoje .dia-numero { color: var(--color-accent-700); font-weight: 700; text-decoration: underline; }
-.dia.selecionado { background: var(--color-accent-100); border-color: var(--color-accent-600); }
-
-.dia-topo { display: flex; justify-content: space-between; }
-.dia-numero { font-size: 13px; }
-.dia-imprevisto { color: var(--cor-imprevisto); font-weight: 700; }
-.dia-entrou { color: var(--cor-entrou); }
-.dia-saiu { color: var(--cor-saiu); }
+.dia-imprevisto:empty { display: none; }
+.dia-entrou { color: var(--verde); }
+.dia-saiu { color: var(--texto-suave); }
 .pontinhos { display: none; } /* os pontinhos só aparecem no celular */
 
-.legenda { margin: var(--space-3) 0 0; font-size: 13px; color: var(--color-neutral-700); }
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 14px; font-size: 12.5px; color: var(--texto-suave); }
+.legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.legenda i { width: 7px; height: 7px; border-radius: 50%; }
+.legenda .so-pc { margin-left: auto; }
 
 /* ---------- formulário ---------- */
-
-.formulario { display: flex; flex-direction: column; gap: var(--space-3); }
-.form-topo { display: flex; align-items: center; gap: var(--space-3); }
-.form-topo h3 { margin: 0; font-size: 22px; }
+.formulario { display: flex; flex-direction: column; gap: 12px; }
+.form-topo { display: flex; align-items: center; gap: 12px; }
+.form-topo h3, .lista-topo h3, .cartao-config h3, .conta h3 { font-size: 17px; }
+.form-topo .link { margin-left: auto; }
 .botao-fechar { display: none; } /* o ✕ só existe no celular */
 
-/* Entrada | Saída | Imprevisto */
-.tipos { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--color-divider); border-radius: var(--radius-md); overflow: hidden; }
-.tipos button { min-height: 36px; background: #fff; border: 0; }
-.tipos button + button { border-left: 1px solid var(--color-divider); }
-.tipos button[aria-pressed="true"] { background: var(--color-accent-600); color: #fff; }
+/* Entrada | Saída | Imprevisto: controle segmentado */
+.tipos { display: grid; grid-template-columns: repeat(3, 1fr); padding: 2px; border-radius: 11px; background: var(--controle); }
+.tipos button {
+  height: 34px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.tipos button[aria-pressed="true"] { background: var(--plaquinha); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); font-weight: 600; }
 
-.duas { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
-.valor-e-botao { display: grid; grid-template-columns: 1fr auto; gap: var(--space-2); }
+.duas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.valor-e-botao { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
 
 /* ---------- lista de lançamentos ---------- */
-
-.lista-topo { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--space-2); }
-.lista-topo h3 { margin: 0; font-size: 22px; }
-
-.lista-itens { max-height: 300px; overflow-y: auto; }
-.lista-vazia { color: var(--color-neutral-700); font-size: 14px; padding: var(--space-3) 0; }
+.lista-topo { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+.lista-itens {
+  max-height: 392px;
+  overflow-y: auto;
+  margin: 0 -8px;
+  padding: 0 8px;
+  scrollbar-width: thin;                    /* barra de rolagem fininha e discreta */
+  scrollbar-color: #8e8e93 transparent;
+}
+.lista-vazia { padding: 18px 0 6px; color: var(--texto-suave); }
 
 .linha {
   display: grid;
-  grid-template-columns: 18px 46px 1fr auto auto 64px;
+  grid-template-columns: 32px 44px minmax(80px, 1fr) auto auto 34px; /* a descrição nunca some */
   align-items: center;
-  gap: var(--space-2);
-  padding: 6px 4px;
-  border-bottom: 1px solid var(--color-divider);
-  font-size: 14px;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--linha);
 }
-.linha.em-edicao { background: var(--color-accent-100); }
-.marca { font-weight: 700; text-align: center; }
-.linha-data { color: var(--color-neutral-700); font-size: 13px; }
+.linha:last-child { border-bottom: 0; }
+/* a linha que está no formulário fica com um fundo verde bem claro */
+.linha.em-edicao { margin: 0 -8px; padding: 10px 8px; border-radius: 12px; border-bottom-color: transparent; background: var(--marca-clara); }
+
+/* bolinha com + − ! na frente de cada linha */
+.marca { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; font-weight: 600; }
+.marca-entrada { background: var(--verde-claro); color: var(--verde); }
+.marca-saida { background: var(--campo); color: var(--texto); }
+.marca-imprevisto { background: var(--laranja-claro); color: var(--laranja); }
+
+.linha-data { font-size: 13px; color: var(--texto-suave); }
+/* descrição comprida não quebra a linha: termina em "…" */
 .linha-texto {
-  display: flex;
-  flex-direction: column;
-  background: none;
-  border: 0;
-  padding: 0;
-  text-align: left;
+  display: block;
   min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.linha-texto small { font-size: 12px; }
-.valor { font-weight: 700; white-space: nowrap; }
+.linha-texto small { display: block; font-size: 12.5px; font-weight: 400; overflow: hidden; text-overflow: ellipsis; }
+.valor { font-weight: 600; white-space: nowrap; }
+.valor-entrada { color: var(--verde); }
+.valor-imprevisto { color: var(--laranja); }
+.linha .link { font-size: 13.5px; }
 
 .excluir {
-  background: none;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  padding: 2px 6px;
-  color: var(--color-neutral-600);
-}
-.excluir:hover { color: var(--cor-erro); }
-.excluir.confirmando { background: var(--cor-erro); color: #fff; }
-
-/* ---------- configurações ---------- */
-
-.cartoes-config {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: #8e8e93;
+  font-size: 13px;
+  transition: background 0.15s, color 0.15s;
 }
-.cartao-config h3, .conta h3 { font-size: 22px; }
-.cartao-config .interruptor { margin-bottom: var(--space-2); }
+.excluir:hover { background: var(--vermelho-claro); color: var(--vermelho); }
+/* 2º clique: vira um botão vermelho "Excluir?" */
+.excluir.confirmando, .excluir.confirmando:hover { padding: 0 10px; border-radius: 8px; background: #d70015; color: #fff; font-weight: 600; }
+/* quando o botão vira "Excluir?", a última coluna precisa de mais espaço */
+.linha:has(.confirmando) { grid-template-columns: 32px 44px minmax(80px, 1fr) auto auto auto; }
 
-.reserva { display: flex; align-items: center; gap: var(--space-2); }
-.reserva input { width: 80px; }
+/* ---------- 6. configurações ---------- */
+.titulo-pagina { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+.cartoes-config { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.cartao-config { display: flex; flex-direction: column; gap: 12px; }
+.cartao-config .interruptor { justify-content: space-between; color: var(--texto); font-size: 15px; }
 
-.grupos { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
-.grupo { display: flex; flex-direction: column; gap: var(--space-2); }
+.reserva { display: flex; align-items: center; gap: 10px; }
+.reserva input { width: 76px; text-align: center; font-weight: 600; }
+
+.grupos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grupo { display: flex; flex-direction: column; gap: 10px; }
 .grupo-itens { display: flex; flex-wrap: wrap; gap: 6px; }
 
+/* cada categoria é uma plaquinha cinza com um ✕ */
 .categoria {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 4px 2px 10px;
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-divider);
-  border-radius: 999px;
+  padding: 5px 5px 5px 12px;
+  border-radius: 9px;
+  background: var(--campo);
   font-size: 14px;
+  font-weight: 500;
 }
-.categoria small { font-size: 11px; }
-.categoria button { background: none; border: 0; padding: 0 4px; color: var(--color-neutral-600); }
-.categoria button:hover:not(:disabled) { color: var(--cor-erro); }
-.categoria button:disabled { opacity: 0.35; cursor: not-allowed; }
-
-.nova-categoria { display: grid; grid-template-columns: 1fr auto; gap: 4px; }
-.nova-categoria input { min-height: 32px; }
-.nova-categoria button {
-  width: 32px;
+.categoria small { font-size: 11.5px; font-weight: 400; }
+.categoria small:empty { display: none; }
+.categoria button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
   border: 0;
-  border-radius: var(--radius-md);
-  background: var(--color-accent-600);
-  color: #fff;
+  border-radius: 50%;
+  background: none;
+  color: #8e8e93;
+  font-size: 11px;
 }
+.categoria button:hover:not(:disabled) { background: var(--vermelho-claro); color: var(--vermelho); }
+.categoria button:disabled { opacity: 0.3; cursor: not-allowed; }
 
-.conta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-}
-.conta h3 { margin: 0; }
-.conta .botao-borda { margin-left: auto; }
+.nova-categoria { display: grid; grid-template-columns: 1fr auto; gap: 6px; }
+.nova-categoria input { height: 38px; font-size: 14px; }
+.nova-categoria button { width: 38px; height: 38px; border: 0; border-radius: 10px; background: var(--botao); color: var(--botao-texto); font-size: 18px; line-height: 1; }
+
+.conta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
+.conta h3 { margin-bottom: 4px; }
+#conta-nome { font-weight: 500; }
 
 /* coisas que só existem no celular */
 .botao-flutuante, .fundo-formulario, .menu-baixo { display: none; }
 
+/* quem pediu "menos movimento" no sistema não vê as animações */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+
+/* tela média (tablet ou janela estreita): as duas colunas viram uma só */
+@media (max-width: 980px) {
+  .colunas { grid-template-columns: 1fr; }
+}
+
 
 /* =====================================================================
-   CELULAR (tela de até 700px)
+   7. CELULAR (tela de até 700px)
    ===================================================================== */
 @media (max-width: 700px) {
 
@@ -422,59 +629,71 @@ button.dia:hover { border-color: var(--color-accent-400); }
   .so-celular { display: inline; }
 
   /* topo mais baixo; o menu vai para baixo da tela */
-  .topo { height: 52px; padding: 0 16px; }
-  .topo .menu { display: none; }
-  .usuario #usuario-nome { display: none; }
+  .topo-dentro { height: 52px; padding: 0 16px; }
+  .topo .menu, #usuario-nome { display: none; }
 
-  .conteudo { padding: 16px 16px 140px; } /* espaço para o botão e o menu de baixo */
+  .conteudo { padding: 16px 16px 160px; } /* espaço para o botão e o menu de baixo */
 
-  /* botões maiores para o dedo */
-  .botao-quadrado { width: 44px; height: 44px; }
-  .botao-principal, input, select { min-height: 44px; }
+  /* campos de 16px: assim o iPhone não dá zoom sozinho ao tocar */
+  input, select { font-size: 16px; }
 
-  .linha-mes h2 { min-width: 0; flex: 1; font-size: 22px; }
-  .linha-mes .interruptor { margin-left: 0; width: 100%; }
+  /* mês: setas nas pontas e o nome no meio */
+  .linha-mes { gap: 12px; margin-bottom: 14px; }
+  .troca-mes { flex: 1; justify-content: space-between; }
+  .troca-mes h2 { min-width: 0; font-size: 19px; white-space: nowrap; }
+  .botao-seta { width: 40px; height: 40px; }
+  /* o interruptor vira uma linha branca inteira */
+  .linha-mes .interruptor {
+    width: 100%;
+    margin-left: 0;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: var(--cartao);
+    box-shadow: var(--sombra);
+    color: var(--texto);
+  }
 
-  /* resumo: saldo em cima, os outros 3 lado a lado */
-  .resumo { grid-template-columns: 1fr 1fr 1fr; }
-  .resumo-saldo { grid-column: 1 / -1; }
-  .resumo > div { padding: var(--space-2) var(--space-3); }
-  .resumo strong { font-size: 17px; }
-  .resumo-saldo strong { font-size: 28px; }
-  .resumo small { font-size: 11px; }
+  .colunas { grid-template-columns: 1fr; gap: 12px; }
+  .coluna-esquerda, .coluna-direita { gap: 12px; }
+  .caixa { padding: 16px; }
 
-  .colunas { grid-template-columns: 1fr; }
-  .caixa { padding: var(--space-3); }
+  /* carteira: cartões um pouco mais baixos */
+  .cartao { height: 164px; margin-bottom: -106px; padding: 18px 20px; } /* faixa de 58px */
+  .cartao strong { font-size: 17px; }
+  .cartao.frente { padding: 20px; }
+  .cartao.frente strong { font-size: 36px; }
 
-  /* calendário: quadradinhos de 44px só com o número e pontinhos coloridos */
-  .dia { min-height: 44px; align-items: center; padding: 4px 2px; }
+  /* calendário: quadradinhos de 46px só com o número e pontinhos coloridos */
+  .dia { min-height: 46px; align-items: center; justify-content: center; gap: 3px; padding: 4px 2px; background: none; }
   .dia-topo { justify-content: center; }
+  .dia-numero { font-size: 15px; }
+  .dia.hoje .dia-numero { width: 28px; height: 28px; margin-left: 0; }
   .dia-imprevisto, .dia-entrou, .dia-saiu { display: none; }
-  .pontinhos { display: flex; gap: 3px; }
+  .pontinhos { display: flex; gap: 3px; height: 5px; }
   .pontinhos i { width: 5px; height: 5px; border-radius: 50%; }
-  .pontinhos i.apagado { visibility: hidden; }
-  .ponto-entrou { background: var(--cor-entrou); }
-  .ponto-saiu { background: var(--color-neutral-800); }
-  .ponto-imprevisto { background: var(--cor-imprevisto); }
+  .pontinhos i.apagado { display: none; }
 
   /* lista: a linha inteira é tocável para editar */
   .lista-itens { max-height: none; }
-  .linha { grid-template-columns: 18px 1fr auto 52px; min-height: 52px; }
-  .excluir { min-height: 36px; }
+  .linha, .linha:has(.confirmando) { grid-template-columns: 36px minmax(80px, 1fr) auto auto; min-height: 56px; }
+  .marca { width: 36px; height: 36px; }
+  .excluir { min-width: 36px; height: 36px; }
 
   /* botão "+ Lançamento" flutuando acima do menu de baixo */
   .botao-flutuante {
     display: block;
     position: fixed;
     right: 16px;
-    bottom: 72px;
+    bottom: calc(74px + env(safe-area-inset-bottom));
     z-index: 5;
-    min-height: 48px;
-    box-shadow: var(--shadow-md);
+    height: 50px;
+    border-radius: 16px;
+    box-shadow: var(--sombra-forte);
   }
   body[data-aba="config"] .botao-flutuante { display: none; }
 
-  /* menu de baixo com as duas abas */
+  /* menu de baixo: barra fosca com as duas abas */
   .menu-baixo {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -483,11 +702,27 @@ button.dia:hover { border-color: var(--color-accent-400); }
     right: 0;
     bottom: 0;
     z-index: 5;
-    height: 56px;
-    background: #fff;
-    border-top: 1px solid var(--color-divider);
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--vidro);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-top: 1px solid var(--linha);
   }
-  .menu-baixo button { border-radius: 0; }
+  .menu-baixo button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 58px;
+    border: 0;
+    background: none;
+    font-size: 11px;
+    font-weight: 500;
+    color: #8e8e93;
+  }
+  .menu-baixo svg { width: 22px; height: 22px; stroke-width: 1.6; }
+  .menu-baixo button.ativo { color: var(--marca-texto); }
 
   /* O formulário vira um painel que sobe de baixo.
      Fica escondido e só aparece quando o body tem a classe "formulario-aberto". */
@@ -498,22 +733,41 @@ button.dia:hover { border-color: var(--color-accent-400); }
     right: 0;
     bottom: 0;
     z-index: 11;
-    max-height: 90vh;
+    max-height: 92vh;
     overflow-y: auto;
-    padding: var(--space-6) 16px;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    box-shadow: var(--shadow-lg);
+    padding: 26px 16px calc(24px + env(safe-area-inset-bottom));
+    border-radius: 28px 28px 0 0;
+    box-shadow: var(--sombra-forte);
   }
-  body.formulario-aberto .formulario { display: flex; }
+  body.formulario-aberto .formulario { display: flex; animation: subir 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  /* o "pegador": tracinho cinza no alto do painel */
+  .formulario::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 36px;
+    height: 5px;
+    margin-left: -18px;
+    border-radius: 3px;
+    background: var(--trilho);
+  }
   .botao-fechar {
-    display: block;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
     margin-left: auto;
-    width: 44px;
-    height: 44px;
-    background: none;
+    padding: 0;
     border: 0;
-    font-size: 18px;
+    border-radius: 50%;
+    background: var(--controle);
+    font-size: 13px;
   }
+  /* quando o "Cancelar" está visível, é ele que empurra os dois para a direita */
+  .form-topo .link:not([hidden]) + .botao-fechar { margin-left: 0; }
+  .tipos button { height: 40px; }
+  .campos input, .formulario input, .formulario select, .formulario .botao-principal { height: 48px; }
 
   /* fundo escuro atrás do painel (tocar nele fecha) */
   body.formulario-aberto .fundo-formulario {
@@ -521,10 +775,32 @@ button.dia:hover { border-color: var(--color-accent-400); }
     position: fixed;
     inset: 0;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.4);
+    animation: aparecer 0.2s;
   }
 
   /* configurações: tudo em uma coluna */
+  .titulo-pagina { font-size: 26px; margin-bottom: 14px; }
   .cartoes-config, .grupos { grid-template-columns: 1fr; }
-  .conta .botao-borda { margin-left: 0; width: 100%; min-height: 44px; }
+  .cartoes-config { gap: 12px; margin-bottom: 12px; }
+  .conta { margin-top: 12px; }
+  .conta .botao-suave { width: 100%; height: 44px; }
+  .categoria { padding: 8px 6px 8px 12px; }
+  .categoria button { width: 28px; height: 28px; }
+  .nova-categoria input, .nova-categoria button { height: 44px; }
+  .nova-categoria button { width: 44px; }
+}
+
+/* animações */
+@keyframes chegar {           /* cartão vindo para a frente da pilha */
+  from { transform: translateY(-18px) scale(0.98); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes subir {            /* painel do formulário subindo */
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

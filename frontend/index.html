@@ -2,28 +2,33 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
   <title>Troco Certo</title>
-  <!-- design system "Industry" (cores, fontes e espaços) + o nosso CSS -->
-  <link rel="stylesheet" href="css/industry.css">
+  <!-- fonte Inter (parecida com a da Apple) + o nosso CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- Faixa do modo demonstração (só aparece no Vercel) -->
   <div id="faixa-demo" class="faixa-demo" hidden>
-    <span>Modo demonstração — os dados ficam só neste navegador</span>
+    <span>Modo demonstração: os dados ficam só neste navegador</span>
     <button type="button" id="restaurar-demo" class="link">Restaurar dados de exemplo</button>
   </div>
 
   <!-- ================= LOGIN ================= -->
   <section id="tela-login" class="tela-entrada" hidden>
-    <form id="form-login" class="cartao-entrada blueprint" novalidate>
-      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-      <div class="logo"><span class="logo-marca">R$</span><span class="logo-nome">Troco Certo</span></div>
-      <h2>Entrar</h2>
-      <label>E-mail <input id="login-email" type="email" placeholder="voce@email.com" autocomplete="email"></label>
-      <label>Senha <input id="login-senha" type="password" autocomplete="current-password"></label>
+    <form id="form-login" class="cartao-entrada" novalidate>
+      <div class="logo logo-grande"><span class="logo-marca">R$</span></div>
+      <h1>Troco Certo</h1>
+      <p class="subtitulo">Entre para ver o seu mês.</p>
+      <div class="campos">
+        <input id="login-email" type="email" placeholder="E-mail" aria-label="E-mail" autocomplete="email">
+        <input id="login-senha" type="password" placeholder="Senha" aria-label="Senha" autocomplete="current-password">
+      </div>
       <p id="login-erro" class="erro" role="alert"></p>
       <button type="submit" class="botao-principal">Entrar</button>
       <p class="trocar">Não tem conta? <button type="button" class="link" data-trocar-para="cadastro">Criar conta</button></p>
@@ -32,13 +37,15 @@
 
   <!-- ================= CADASTRO ================= -->
   <section id="tela-cadastro" class="tela-entrada" hidden>
-    <form id="form-cadastro" class="cartao-entrada blueprint" novalidate>
-      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-      <div class="logo"><span class="logo-marca">R$</span><span class="logo-nome">Troco Certo</span></div>
-      <h2>Criar conta</h2>
-      <label>Nome <input id="cadastro-nome" autocomplete="name"></label>
-      <label>E-mail <input id="cadastro-email" type="email" autocomplete="email"></label>
-      <label>Senha (mín. 6 caracteres) <input id="cadastro-senha" type="password" autocomplete="new-password"></label>
+    <form id="form-cadastro" class="cartao-entrada" novalidate>
+      <div class="logo logo-grande"><span class="logo-marca">R$</span></div>
+      <h1>Criar conta</h1>
+      <p class="subtitulo">Leva menos de um minuto.</p>
+      <div class="campos">
+        <input id="cadastro-nome" placeholder="Nome" aria-label="Nome" autocomplete="name">
+        <input id="cadastro-email" type="email" placeholder="E-mail" aria-label="E-mail" autocomplete="email">
+        <input id="cadastro-senha" type="password" placeholder="Senha (mínimo 6 caracteres)" aria-label="Senha" autocomplete="new-password">
+      </div>
       <p id="cadastro-erro" class="erro" role="alert"></p>
       <button type="submit" class="botao-principal">Criar conta</button>
       <p class="trocar">Já tem conta? <button type="button" class="link" data-trocar-para="login">Entrar</button></p>
@@ -48,15 +55,18 @@
   <!-- ================= APLICATIVO (depois do login) ================= -->
   <div id="app" hidden>
 
+    <!-- barra do topo: fica "de vidro" (fosca) por cima do conteúdo -->
     <header class="topo">
-      <div class="logo"><span class="logo-marca">R$</span><span class="logo-nome">Troco Certo</span></div>
-      <nav class="menu">
-        <button type="button" data-aba="painel">Painel</button>
-        <button type="button" data-aba="config">Configurações</button>
-      </nav>
-      <div class="usuario">
-        <span id="usuario-nome"></span>
-        <button type="button" class="botao-borda" data-sair>Sair</button>
+      <div class="topo-dentro">
+        <div class="logo"><span class="logo-marca">R$</span><span class="logo-nome">Troco Certo</span></div>
+        <nav class="menu">
+          <button type="button" data-aba="painel">Painel</button>
+          <button type="button" data-aba="config">Configurações</button>
+        </nav>
+        <div class="usuario">
+          <span id="usuario-nome"></span>
+          <button type="button" class="botao-suave" data-sair>Sair</button>
+        </div>
       </div>
     </header>
 
@@ -64,38 +74,50 @@
     <main id="tela-painel" class="conteudo">
 
       <div class="linha-mes">
-        <button type="button" id="mes-anterior" class="botao-quadrado" aria-label="Mês anterior">←</button>
-        <h2 id="mes-atual"></h2>
-        <button type="button" id="mes-seguinte" class="botao-quadrado" aria-label="Próximo mês">→</button>
+        <div class="troca-mes">
+          <button type="button" id="mes-anterior" class="botao-seta" aria-label="Mês anterior">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>
+          </button>
+          <h2 id="mes-atual"></h2>
+          <button type="button" id="mes-seguinte" class="botao-seta" aria-label="Próximo mês">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg>
+          </button>
+        </div>
         <button type="button" id="mes-hoje" class="link">Hoje</button>
         <button type="button" class="interruptor" aria-pressed="true">
-          <span class="trilho"><span class="bolinha"></span></span>
           Descontar os imprevistos do saldo
+          <span class="trilho"><span class="bolinha"></span></span>
         </button>
       </div>
 
-      <div class="resumo">
-        <div class="resumo-saldo">
-          <span class="rotulo">Saldo do mês</span>
-          <strong id="saldo">R$ 0,00</strong>
-          <small id="saldo-nota"></small>
-        </div>
-        <div>
-          <span class="rotulo">+ Entradas</span>
-          <strong id="total-entradas" class="valor-entrada">R$ 0,00</strong>
-        </div>
-        <div>
-          <span class="rotulo">− Saídas</span>
-          <strong id="total-saidas">R$ 0,00</strong>
-        </div>
-        <div>
-          <span class="rotulo">! Imprevistos</span>
-          <strong id="total-imprevistos">R$ 0,00</strong>
-          <small id="imprevistos-nota"></small>
-        </div>
-      </div>
-
       <div class="colunas">
+
+        <div class="coluna-esquerda">
+
+        <!-- a carteira: uma pilha de cartões. Tocar num cartão traz ele para a frente.
+             (cada cartão é um botão, para funcionar também pelo teclado) -->
+        <div class="carteira">
+          <button type="button" class="cartao cartao-entradas" aria-expanded="false">
+            <span class="cartao-rotulo">Entradas</span>
+            <strong id="total-entradas">R$ 0,00</strong>
+            <small id="entradas-nota"></small>
+          </button>
+          <button type="button" class="cartao cartao-saidas" aria-expanded="false">
+            <span class="cartao-rotulo">Saídas</span>
+            <strong id="total-saidas">R$ 0,00</strong>
+            <small id="saidas-nota"></small>
+          </button>
+          <button type="button" class="cartao cartao-imprevistos" aria-expanded="false">
+            <span class="cartao-rotulo">Imprevistos</span>
+            <strong id="total-imprevistos">R$ 0,00</strong>
+            <small id="imprevistos-nota"></small>
+          </button>
+          <button type="button" class="cartao cartao-saldo frente" aria-expanded="true">
+            <span class="cartao-rotulo">Saldo do mês</span>
+            <strong id="saldo">R$ 0,00</strong>
+            <small id="saldo-nota"></small>
+          </button>
+        </div>
 
         <!-- calendário -->
         <section class="caixa calendario">
@@ -103,8 +125,15 @@
             <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
           </div>
           <div id="dias" class="dias"></div>
-          <p class="legenda">+ entrou · − saiu · ! imprevisto — clique num dia para ver só ele e lançar nessa data.</p>
+          <p class="legenda">
+            <span><i class="ponto-entrou"></i> entrou</span>
+            <span><i class="ponto-saiu"></i> saiu</span>
+            <span><i class="ponto-imprevisto"></i> imprevisto</span>
+            <span class="so-pc">Toque num dia para ver só ele e lançar nessa data.</span>
+          </p>
         </section>
+
+        </div><!-- fim da coluna da esquerda -->
 
         <div class="coluna-direita">
 
@@ -124,9 +153,9 @@
               <select id="campo-categoria" aria-label="Categoria"></select>
               <input id="campo-data" type="date" aria-label="Data">
             </div>
-            <input id="campo-descricao" maxlength="80" placeholder="Descrição">
+            <input id="campo-descricao" maxlength="80" placeholder="Descrição" aria-label="Descrição">
             <div class="valor-e-botao">
-              <input id="campo-valor" inputmode="decimal" placeholder="Valor (R$)">
+              <input id="campo-valor" inputmode="decimal" placeholder="Valor (R$)" aria-label="Valor em reais">
               <button type="submit" id="botao-salvar" class="botao-principal">Adicionar</button>
             </div>
             <p id="mensagem" class="mensagem" role="status"></p>
@@ -147,14 +176,14 @@
 
     <!-- -------- CONFIGURAÇÕES -------- -->
     <main id="tela-config" class="conteudo estreito" hidden>
-      <h2>Configurações</h2>
+      <h2 class="titulo-pagina">Configurações</h2>
 
       <div class="cartoes-config">
         <section class="caixa cartao-config">
           <h3>Saldo</h3>
           <button type="button" class="interruptor" aria-pressed="true">
-            <span class="trilho"><span class="bolinha"></span></span>
             Descontar os imprevistos do saldo
+            <span class="trilho"><span class="bolinha"></span></span>
           </button>
           <p class="nota">Desligado: o saldo mostra só entradas − saídas, e os imprevistos aparecem à parte.</p>
         </section>
@@ -172,9 +201,11 @@
       </section>
 
       <section class="caixa conta">
-        <h3>Conta</h3>
-        <span><span id="conta-nome"></span> · <span id="conta-email" class="nota"></span></span>
-        <button type="button" class="botao-borda" data-sair>Sair da conta</button>
+        <div>
+          <h3>Conta</h3>
+          <span id="conta-nome"></span> <span id="conta-email" class="nota"></span>
+        </div>
+        <button type="button" class="botao-suave" data-sair>Sair da conta</button>
       </section>
     </main>
 
@@ -182,8 +213,14 @@
     <button type="button" id="abrir-formulario" class="botao-principal botao-flutuante">+ Lançamento</button>
     <div id="fundo-formulario" class="fundo-formulario"></div>
     <nav class="menu-baixo">
-      <button type="button" data-aba="painel">Painel</button>
-      <button type="button" data-aba="config">Configurações</button>
+      <button type="button" data-aba="painel">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4.5h14v4H3zM3 11.5h6v4H3zM12 11.5h5v4h-5z"/></svg>
+        Painel
+      </button>
+      <button type="button" data-aba="config">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h9M15 6h2M3 14h2M8 14h9"/><circle cx="13.5" cy="6" r="1.8"/><circle cx="6.5" cy="14" r="1.8"/></svg>
+        Configurações
+      </button>
     </nav>
   </div>
 
